@@ -1,55 +1,54 @@
 stock_prices = {
-    "AAPL": 175,
-    "GOOGL": 2825,
-    "MSFT": 299,
-    "TSLA": 709,
-    "AMZN": 3342
+    "AAPL": 180,   # Apple
+    "TSLA": 250,   # Tesla
+    "AMZN": 140,   # Amazon
+    "MSFT": 320,   # Microsoft
+    "GOOGL": 130   # Google
 }
 
-def get_user_portfolio():
-    portfolio = {}
-    print("Enter your stock holdings. Type 'done' to finish")
+portfolio = {}
 
-    while True:
-        stock = input("Enter stock:").upper()
-        if stock == "Done":
-            break
-        if stock not in stock_prices:
-            print("Stock not found in price list. Try again.")
-            continue
+print("📈 Welcome to the Stock Portfolio Tracker!")
+print("Available stocks and their prices:")
+for stock, price in stock_prices.items():
+    print(f"{stock}: ${price}")
 
-        try:
-            quantity = int(input(f"Enter quantity of {stock}:"))
-            if quantity < 0:
-                print("Quantity cannot be negative.")
-                continue
-            portfolio[stock] = portfolio.get(stock, 0) + quantity
-        except ValueError:  
-            print("Please enter a valid number.")
+print("\nEnter the stocks you own. Type 'done' when finished.\n")
 
-    return portfolio
+# User input loop
+while True:
+    stock_name = input("Enter stock symbol (or 'done' to finish): ").upper()
+    if stock_name == "DONE":
+        break
+    elif stock_name not in stock_prices:
+        print("❌ Invalid stock symbol. Try again.")
+        continue
+    try:
+        quantity = int(input(f"Enter quantity for {stock_name}: "))
+        portfolio[stock_name] = portfolio.get(stock_name, 0) + quantity
+    except ValueError:
+        print("⚠️ Please enter a valid number for quantity.")
 
-def calculate_investment(portfolio):
-    total_value = 0
-    print("\n Portfolio Summary:") 
-    for stock, qty in portfolio.items():
-        price = stock_prices[stock] 
-        value = price * qty
-        total_value += value
-        print(f"{stock}:{qty} shares ${price} = ${value}")
-    print(f"\n Total Investment Value: ${total_value}")
-    return total_value
+# Calculate total investment
+total_value = 0
+print("\n💼 Your Portfolio Summary:")
+for stock, qty in portfolio.items():
+    value = stock_prices[stock] * qty
+    total_value += value
+    print(f"{stock}: {qty} shares × ${stock_prices[stock]} = ${value}")
 
-def save_to_file(portfolio, total, filename="portfolio_summary.txt"):
-    with open(filename, "w") as file:
-        file.write("Stock Portfolio Summary\n")
-        file.write("-----------------------\n")
+print(f"\n💰 Total Investment Value: ${total_value}")
+
+# Optional: Save to file
+save_option = input("\nWould you like to save this report? (yes/no): ").lower()
+if save_option == "yes":
+    file_name = "portfolio_report.txt"
+    with open(file_name, "w") as file:
+        file.write("📊 STOCK PORTFOLIO REPORT\n")
+        file.write("--------------------------\n")
         for stock, qty in portfolio.items():
-            price = stock_prices[stock]
-            value = price * qty
-            file.write(f"\n Total Investment: ${total}")
-    print(f"Portfolio saved to {filename}") 
-portfolio = get_user_portfolio()
-port = calculate_investment(portfolio)
+            file.write(f"{stock}: {qty} shares × ${stock_prices[stock]} = ${stock_prices[stock] * qty}\n")
+        file.write(f"\nTotal Investment: ${total_value}\n")
+    print(f"✅ Report saved successfully as '{file_name}'")
 
-
+print("\nThank you for using the Stock Portfolio Tracker! 🚀")
